@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d24">
+<title>A Little Place to Rest</title>
+
+<style>
+:root {
+  --night: #080d24;
+  --navy: #101a3b;
+  --lavender: #c9b9ff;
+  --white: #f5f2ff;
+  --gold: #f2d89a;
+  --muted: #c2c4dc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--white);
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(ellipse at 50% 110%, #26345f 0%, transparent 55%),
+    radial-gradient(ellipse at 15% 15%, #22234c 0%, transparent 42%),
+    linear-gradient(145deg, #080d24, #111735 60%, #090f29);
+}
+
+button {
+  font: inherit;
+}
+
+.sky, .sky::before, .sky::after {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sky::before {
+  content: "";
+  opacity: .7;
+  background-image:
+    radial-gradient(1px 1px at 8% 18%, white 99%, transparent),
+    radial-gradient(1px 1px at 22% 72%, white 99%, transparent),
+    radial-gradient(2px 2px at 39% 25%, #f2d89a 99%, transparent),
+    radial-gradient(1px 1px at 57% 62%, white 99%, transparent),
+    radial-gradient(1px 1px at 74% 17%, white 99%, transparent),
+    radial-gradient(2px 2px at 89% 48%, #c9b9ff 99%, transparent),
+    radial-gradient(1px 1px at 95% 82%, white 99%, transparent);
+  background-size: 370px 310px;
+  animation: twinkle 5s ease-in-out infinite alternate;
+}
+
+.sky::after {
+  content: "";
+  opacity: .22;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    #9a8bd8,
+    transparent 60%
+  );
+}
+
+@keyframes twinkle {
+  from { opacity: .35; }
+  to { opacity: .9; }
+}
+
+.shooting-star {
+  position: fixed;
+  width: 90px;
+  height: 1px;
+  top: 18%;
+  left: 75%;
+  background: linear-gradient(
+    90deg, transparent, #fff, transparent
+  );
+  transform: rotate(-35deg);
+  opacity: 0;
+  animation: shoot 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes shoot {
+  0%, 72% {
+    opacity: 0;
+    transform: translate(0,0) rotate(-35deg);
+  }
+  74% { opacity: 1; }
+  82% {
+    opacity: 0;
+    transform: translate(-230px,150px) rotate(-35deg);
+  }
+  100% { opacity: 0; }
+}
+
+.moon {
+  position: fixed;
+  width: 105px;
+  height: 105px;
+  right: 9%;
+  top: 8%;
+  border-radius: 50%;
+  background: #f8efcf;
+  box-shadow:
+    0 0 35px #f2d89a66,
+    0 0 90px #c9b9ff33;
+  opacity: .9;
+  pointer-events: none;
+}
+
+.moon::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #111735;
+  left: 28px;
+  top: -13px;
+}
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 34px 20px 24px;
+}
+
+.progress-wrap {
+  width: min(520px, 88vw);
+  margin-bottom: 22px;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #c7c3e3;
+  font: 11px/1.4 Arial, sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+
+.progress {
+  height: 3px;
+  background: #ffffff20;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 16.666%;
+  background: linear-gradient(
+    90deg, var(--lavender), var(--gold)
+  );
+  transition: width .5s ease;
+}
+
+.card {
+  width: min(650px, 92vw);
+  min-height: min(570px, 70vh);
+  padding: clamp(28px, 6vw, 58px)
+           clamp(22px, 6vw, 58px);
+  border: 1px solid #d8d0ff30;
+  border-radius: 28px;
+  background: linear-gradient(
+    145deg, #ffffff0d, #ffffff05
+  );
+  box-shadow:
+    0 25px 90px #00000035,
+    inset 0 1px #ffffff12;
+  backdrop-filter: blur(12px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: appear .65s ease both;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page {
+  display: none;
+  width: 100%;
+}
+
+.page.active {
+  display: block;
+  animation: appear .55s ease both;
+}
+
+.eyebrow {
+  color: var(--gold);
+  font: 11px/1.5 Arial, sans-serif;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+h1, h2 {
+  font-weight: normal;
+  line-height: 1.18;
+  margin: 0 0 18px;
+}
+
+h1 {
+  font-size: clamp(36px, 7vw, 58px);
+}
+
+h2 {
+  font-size: clamp(29px, 5vw, 42px);
+}
+
+p {
+  color: var(--muted);
+  font-size: clamp(16px, 2.5vw, 19px);
+  line-height: 1.8;
+  margin: 12px auto;
+  max-width: 490px;
+}
+
+.accent {
+  color: var(--lavender);
+}
+
+.gold {
+  color: var(--gold);
+}
+
+.symbol {
+  font-size: 54px;
+  margin-bottom: 22px;
+  filter: drop-shadow(0 0 18px #c9b9ff55);
+}
+
+.soft-button {
+  margin-top: 25px;
+  padding: 13px 25px;
+  border-radius: 99px;
+  border: 1px solid #d9cfff88;
+  color: var(--white);
+  background: #c9b9ff16;
+  cursor: pointer;
+  transition: .25s ease;
+  letter-spacing: .5px;
+}
+
+.soft-button:hover {
+  background: #c9b9ff30;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px #c9b9ff22;
+}
+
+.reveal {
+  display: none;
+  margin-top: 20px;
+  color: var(--gold);
+  line-height: 1.8;
+}
+
+.reveal.show {
+  display: block;
+  animation: appear .5s ease both;
+}
+
+.letter {
+  text-align: left;
+  white-space: pre-line;
+  min-height: 170px;
+  color: #e8e4f8;
+  font-size: 17px;
+  line-height: 1.95;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.photo {
+  aspect-ratio: 4 / 3;
+  border: 1px solid #ffffff30;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #222b52, #554a77);
+  display: grid;
+  place-items: center;
+  color: #e8ddff;
+  font: 13px Arial, sans-serif;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.reminders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.reminders button {
+  min-height: 70px;
+  border: 1px solid #d9cfff44;
+  border-radius: 14px;
+  color: var(--white);
+  background: #ffffff0a;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.reminders button:hover {
+  background: #c9b9ff20;
+}
+
+.reminder-message {
+  min-height: 60px;
+  color: var(--gold);
+  margin-top: 18px;
+  line-height: 1.7;
+}
+
+.heart {
+  font-size: 86px;
+  color: #a9baff;
+  text-shadow: 0 0 22px #9eafff99;
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.nav {
+  width: min(650px, 92vw);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.nav button {
+  border: 0;
+  background: transparent;
+  color: #e8e4fa;
+  cursor: pointer;
+  padding: 10px 4px;
+  opacity: .9;
+}
+
+.nav button:disabled {
+  opacity: .25;
+  cursor: default;
+}
+
+.nav .next {
+  border: 1px solid #d9cfff77;
+  border-radius: 99px;
+  padding: 12px 22px;
+  background: #c9b9ff16;
+}
+
+.nav .next:hover {
+  background: #c9b9ff30;
+}
+
+.audio-control {
+  position: fixed;
+  z-index: 3;
+  left: 18px;
+  bottom: 16px;
+  border: 1px solid #ffffff30;
+  border-radius: 99px;
+  padding: 9px 13px;
+  background: #101a3bcc;
+  color: #e8e4fa;
+  font: 12px Arial, sans-serif;
+  cursor: pointer;
+}
+
+.tiny-note {
+  font: 11px Arial, sans-serif;
+  color: #a9abc7;
+  margin-top: 20px;
+}
+
+@media (max-height: 720px) {
+  body {
+    overflow-y: auto;
+  }
+
+  .app {
+    min-height: 100vh;
+    justify-content: flex-start;
+  }
+
+  .card {
+    min-height: 490px;
+  }
+}
+
+@media (max-width: 480px) {
+  .moon {
+    width: 72px;
+    height: 72px;
+    right: 6%;
+    top: 5%;
+  }
+
+  .moon::after {
+    width: 70px;
+    height: 70px;
+    left: 20px;
+    top: -9px;
+  }
+
+  .card {
+    min-height: 540px;
+  }
+
+  .gallery {
+    gap: 8px;
+  }
+
+  .audio-control {
+    bottom: 9px;
+    left: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="shooting-star"></div>
+<div class="moon"></div>
+
+<main class="app">
+
+<div class="progress-wrap">
+  <div class="progress-meta">
+    <span>A LITTLE MOMENT FOR YOU</span>
+    <span id="page-count">01 / 06</span>
+  </div>
+
+  <div class="progress">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<section class="card">
+
+  <!-- PAGE 1: WELCOME -->
+  <div class="page active">
+    <div class="eyebrow">
+      For someone who deserves a pause
+    </div>
+
+    <div class="symbol">☾</div>
+
+    <h1>
+      A Little Place<br>
+      <span class="accent">to Rest.</span>
+    </h1>
+
+    <p>
+      I made this small corner of the universe just for you.
+      No rush, no expectations. Just a quiet moment to breathe.
+    </p>
+
+    <p class="gold">
+      Tonight, you can let the world wait.
+    </p>
+  </div>
+
+  <!-- PAGE 2: MOON REMINDER -->
+  <div class="page">
+    <div class="eyebrow">A gentle reminder</div>
+
+    <div class="symbol">✧</div>
+
+    <h2>
+      Even the moon<br>
+      <span class="accent">rests sometimes.</span>
+    </h2>
+
+    <p>
+      It doesn't shine at its fullest every night,
+      and that doesn't make it any less beautiful.
+    </p>
+
+    <button class="soft-button" id="moon-button">
+      Tap for a little reminder
+    </button>
+
+    <div class="reveal" id="moon-reveal">
+      You don't have to be okay every second.
+      Resting is not falling behind.
+      You're allowed to take your time. ♡
+    </div>
+  </div>
+
+  <!-- PAGE 3: PERSONAL LETTER -->
+  <div class="page">
+    <div class="eyebrow">A note from me to you</div>
+
+    <h2>
+      Just a little <span class="accent">letter.</span>
+    </h2>
+
+    <p class="letter" id="letter"></p>
+  </div>
+  <!-- PAGE 4: PHOTO GALLERY -->
+  <div class="page">
+    <div class="eyebrow">
+      Little moments worth keeping
+    </div>
+
+    <h2>
+      Some memories, <span class="accent">some smiles.</span>
+    </h2>
+
+    <p>
+      If you want, you can replace these with your
+      favorite photos together.
+    </p>
+
+    <div class="gallery">
+
+      <div class="photo">
+        <img src="images/memory1.jpg"
+             alt="Memory one"
+             onerror="this.style.display='none';this.parentElement.textContent='Add memory1.jpg'">
+      </div>
+
+      <div class="photo">
+        <img src="images/memory2.jpg"
+             alt="Memory two"
+             onerror="this.style.display='none';this.parentElement.textContent='Add memory2.jpg'">
+      </div>
+
+      <div class="photo">
+        <img src="images/memory3.jpg"
+             alt="Memory three"
+             onerror="this.style.display='none';this.parentElement.textContent='Add memory3.jpg'">
+      </div>
+
+      <div class="photo">
+        <img src="images/memory4.jpg"
+             alt="Memory four"
+             onerror="this.style.display='none';this.parentElement.textContent='Add memory4.jpg'">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGE 5: LITTLE REMINDERS -->
+  <div class="page">
+    <div class="eyebrow">
+      For whenever you need to hear it
+    </div>
+
+    <h2>
+      Little things to <span class="accent">remember.</span>
+    </h2>
+
+    <p>
+      Choose one. Maybe it's exactly what you need right now.
+    </p>
+
+    <div class="reminders">
+
+      <button data-message="You are doing better than you think. Be gentle with yourself.">
+        ♡ You're doing enough
+      </button>
+
+      <button data-message="You deserve the same kindness you so easily give to others.">
+        ✧ Be kind to you
+      </button>
+
+      <button data-message="One small step at a time. You don't need to figure everything out tonight.">
+        ☾ Take your time
+      </button>
+
+      <button data-message="Even on your hardest days, you are still someone worth caring for.">
+        ☆ You matter
+      </button>
+
+    </div>
+
+    <div class="reminder-message"
+         id="reminder-message"
+         aria-live="polite">
+    </div>
+  </div>
+
+  <!-- PAGE 6: FINAL MESSAGE -->
+  <div class="page">
+    <div class="eyebrow">One last thing</div>
+
+    <div class="heart">♥</div>
+
+    <h2>
+      Sending you a<br>
+      <span class="accent">virtual hug.</span>
+    </h2>
+
+    <p>
+      I hope tomorrow feels a little lighter.
+      Until then, please rest, drink some water,
+      and remember that you don't have to carry
+      everything all at once.
+    </p>
+
+    <p class="gold">
+      You are appreciated. Always. ♡
+    </p>
+
+    <div class="tiny-note">
+      Made with care, just for you.
+    </div>
+  </div>
+
+</section>
+<nav class="nav" aria-label="Page navigation">
+  <button id="back-button" disabled>
+    ← Back
+  </button>
+
+  <button class="next" id="next-button">
+    Continue →
+  </button>
+</nav>
+
+</main>
+
+<button class="audio-control" id="audio-button">
+  ♫ Play night sounds
+</button>
+
+<audio id="night-audio"
+       src="audio/night.mp3"
+       loop
+       preload="none">
+</audio>
+<script>
+
+// PERSONAL LETTER
+// You can edit this message.
+
+const letterText = `Hey you,
+
+I know today has been exhausting, and I just want you to know that you don't have to pretend to be strong all the time.
+
+I'm proud of you for making it through the day, even the parts nobody else saw. I hope you give yourself permission to slow down, breathe, and take a break.
+
+You deserve peaceful moments, genuine smiles, and people who make life feel a little softer.
+
+Please take care of yourself, okay?
+
+With care,
+Someone who is thinking of you ♡`;
+
+
+// PAGE NAVIGATION
+
+const pages = [...document.querySelectorAll(".page")];
+
+const backButton =
+  document.getElementById("back-button");
+
+const nextButton =
+  document.getElementById("next-button");
+
+const progressFill =
+  document.getElementById("progress-fill");
+
+const pageCount =
+  document.getElementById("page-count");
+
+let currentPage = 0;
+
+function showPage(index) {
+
+  currentPage = Math.max(
+    0,
+    Math.min(index, pages.length - 1)
+  );
+
+  pages.forEach((page, i) => {
+    page.classList.toggle(
+      "active",
+      i === currentPage
+    );
+  });
+
+  backButton.disabled = currentPage === 0;
+
+  nextButton.textContent =
+    currentPage === pages.length - 1
+      ? "Start again ↺"
+      : "Continue →";
+
+  progressFill.style.width =
+    `${((currentPage + 1) / pages.length) * 100}%`;
+
+  pageCount.textContent =
+    `${String(currentPage + 1).padStart(2, "0")} / ${String(pages.length).padStart(2, "0")}`;
+
+  if (currentPage === 2) {
+    typeLetter();
+  }
+}
+
+backButton.addEventListener("click", () => {
+  showPage(currentPage - 1);
+});
+
+nextButton.addEventListener("click", () => {
+  showPage(
+    currentPage === pages.length - 1
+      ? 0
+      : currentPage + 1
+  );
+});
+
+
+// TYPEWRITER LETTER EFFECT
+
+let typingStarted = false;
+
+function typeLetter() {
+
+  if (typingStarted) return;
+
+  typingStarted = true;
+
+  const target =
+    document.getElementById("letter");
+
+  let index = 0;
+
+  const reducedMotion =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+  if (reducedMotion) {
+    target.textContent = letterText;
+    return;
+  }
+
+  const timer = setInterval(() => {
+
+    target.textContent +=
+      letterText.charAt(index++);
+
+    if (index >= letterText.length) {
+      clearInterval(timer);
+    }
+
+  }, 24);
+}
+
+
+// MOON REMINDER BUTTON
+
+document
+  .getElementById("moon-button")
+  .addEventListener("click", () => {
+
+    document
+      .getElementById("moon-reveal")
+      .classList.add("show");
+
+  });
+
+
+// LITTLE REMINDER BUTTONS
+
+document
+  .querySelectorAll(".reminders button")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      document
+        .getElementById("reminder-message")
+        .textContent = button.dataset.message;
+
+    });
+
+  });
+
+
+// AMBIENT NIGHT AUDIO
+
+const audio =
+  document.getElementById("night-audio");
+
+const audioButton =
+  document.getElementById("audio-button");
+
+audioButton.addEventListener("click", async () => {
+
+  if (audio.paused) {
+
+    try {
+
+      await audio.play();
+
+      audioButton.textContent =
+        "♫ Pause night sounds";
+
+    } catch {
+
+      audioButton.textContent =
+        "♫ Add audio/night.mp3";
+
+    }
+
+  } else {
+
+    audio.pause();
+
+    audioButton.textContent =
+      "♫ Play night sounds";
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
